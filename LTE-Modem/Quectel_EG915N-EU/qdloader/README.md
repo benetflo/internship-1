@@ -1,3 +1,5 @@
+Quectel EG915N-EU
+
 The latest firmware version can be downloaded, when available from this link https://www.quectel.com/download-zone/. At the time of writing, the latest version is **EG915UEUABR03A01M08 01.301.01.301**. **Note:** A Quectel account login is required to download the firmware.
 
 **Step 1 - Moving necessary folders/files into Hemlas module:**
