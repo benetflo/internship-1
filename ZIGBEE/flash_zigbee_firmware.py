@@ -4,7 +4,7 @@ from pathlib import PureWindowsPath
 import os
 import zipfile
 
-# fixa ssh nycklar? 
+# fixa ssh nycklar? för att slippa skriva in lösenord hela tin' :)
 
 LOCAL_GBL_DIR = PureWindowsPath('c:/users/benfl/downloads/firmware-build-hemla_zigbee_ncp_7.5.0.0') # THIS SHOULD BE A FOLDER, IT CAN BE A ZIPPED FOLDER, PROGRAM WILL UNZIP IF NEEDED
 UNZIPPED_DIR = "c:/users/benfl/downloads/unzipped_firmware" # created if user enters ZIP-file as LOCAL_GBL_DIR. LOCAL_GBL_DIR will be set to this after unzipping
@@ -12,25 +12,6 @@ REMOTE_GBL_PATH = "~/ZIGBEE"
 SSH_HOST = "benflo@192.168.1.198"
 DEVICE_PATH = "/dev/ttyAMA3"                # device port of the Zigbee chip
 VIRTUAL_ENV_NAME = ".benjamin-zigbee"       # name of python venv on CM5
-
-def get_last_modified(gbls: dict):
-    
-    last_modified_date = 0
-    last_modified_file = ""
-    date_updated_flag = True
-
-    for key, value in gbls.items():
-        
-        if key == "file_name" and date_updated_flag is True:
-            last_modified_file = value
-            date_updated_flag = False
-
-        if key == "last_modified":
-            if value > last_modified_date:
-                last_modified_date = value
-                date_updated_flag = True
-
-    return last_modified_file
             
 def find_latest_gbl():
             
@@ -63,9 +44,9 @@ def find_latest_gbl():
                 "last_modified": modified_time
             })
     
-    # FILE NOT FOUND --> Clean exit
+    # NO FIRMWARE FILES --> Clean exit
     if list_of_gbls == []:
-        sys.exit(f"FILE NOT FOUND IN --> {LOCAL_GBL_DIR}")
+        sys.exit(f"NO FIRMWARE FILES IN --> {LOCAL_GBL_DIR}")
     
     # get latest modified firmware file
     latest_gbl_file = max(list_of_gbls, key=lambda x: x["last_modified"])["file_name"]
@@ -77,38 +58,54 @@ def upload_to_cm5(local_file: str):
     print() # this is just for clean print in terminal
 
     # Copy file to CM5 --> User must enter SSH password:
-    result = subprocess.run(["scp", f"{LOCAL_GBL_DIR}/{local_file}", f"{SSH_HOST}:{REMOTE_GBL_PATH}"], check=False)    
+    try:
+        result = subprocess.run(["scp", f"{LOCAL_GBL_DIR}/{local_file}", f"{SSH_HOST}:{REMOTE_GBL_PATH}"], check=False, stderr=subprocess.PIPE, text=True)    
 
-    if result.returncode == 0:
-        print("\nUpload to CM5 was successful! :)")
-    else:
-        print("\nUpload to CM5 was unsuccessful! :(")
+        if result.returncode == 0:
+            print("\nUpload to CM5 was successful! :)")
+        else:
+            print("\nUpload to CM5 was unsuccessful! :(")
+            print(result.stderr)
+    
+    except Exception as e:
+            print(f"Error during upload stage: {e}")
+            sys.exit(1)
 
 def flash_on_cm5(local_file: str):
     
     command = f"cd ZIGBEE && source {VIRTUAL_ENV_NAME}/bin/activate && universal-silabs-flasher --device {DEVICE_PATH} flash --firmware {REMOTE_GBL_PATH}/{local_file} && universal-silabs-flasher --device {DEVICE_PATH} probe"
     # Has to enter password again :(
-    result = subprocess.run(["ssh", "-t", f"{SSH_HOST}", command], check=False, stderr=subprocess.PIPE, text=True)
+    try:
+        result = subprocess.run(["ssh", "-t", f"{SSH_HOST}", command], check=False, stderr=subprocess.PIPE, text=True)
 
-    # if successful
-    if result.returncode == 0:
-        return True 
+        # if successful
+        if result.returncode == 0:
+            return True 
+        else:
+            return False
     
-    return False
+    except Exception as e:
+        print(f"Error during flash/probe stage: {e}")
+        sys.exit(1)
 
 def run_reset_chip():
     
     print("Running 'reset_chip.py'...")
     command = f"cd ZIGBEE && sudo python reset_chip.py" 
     # Has to enter password again :)
-    result = subprocess.run(["ssh", "-t", f"{SSH_HOST}", command], check=False, stderr=subprocess.PIPE, text=True)
+    try:
+        result = subprocess.run(["ssh", "-t", f"{SSH_HOST}", command], check=False, stderr=subprocess.PIPE, text=True)
 
-    # if successful
-    if result.returncode == 0:
-        return True
+        # if successful
+        if result.returncode == 0:
+            return True
+        else:
+            print(result.stderr)
+            return False
     
-    print(result.stderr)
-    return False
+    except Exception as e:
+        print(f"Error resetting the chip: {e}")
+        sys.exit(1)
 
 def main():
 
