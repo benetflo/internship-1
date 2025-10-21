@@ -6,12 +6,12 @@ import zipfile
 
 # fixa ssh nycklar? för att slippa skriva in lösenord hela tin' :)
 
-LOCAL_GBL_DIR = PureWindowsPath('c:/users/benfl/downloads/firmware-build-hemla_zigbee_ncp_7.5.0.0') # THIS SHOULD BE A FOLDER, IT CAN BE A ZIPPED FOLDER, PROGRAM WILL UNZIP IF NEEDED
+LOCAL_GBL_DIR = PureWindowsPath('c:/users/username/downloads/firmware-build-zigbee_ncp_7.5.0.0') # THIS SHOULD BE A FOLDER, IT CAN BE A ZIPPED FOLDER, PROGRAM WILL UNZIP IF NEEDED
 UNZIPPED_DIR = "c:/users/benfl/downloads/unzipped_firmware" # created if user enters ZIP-file as LOCAL_GBL_DIR. LOCAL_GBL_DIR will be set to this after unzipping
 REMOTE_GBL_PATH = "~/ZIGBEE"
-SSH_HOST = "benflo@192.168.1.198"
+SSH_HOST = "example@127.0.0.1"
 DEVICE_PATH = "/dev/ttyAMA3"                # device port of the Zigbee chip
-VIRTUAL_ENV_NAME = ".benjamin-zigbee"       # name of python venv on CM5
+VIRTUAL_ENV_NAME = ".example-venv-zigbee"       # name of python venv on CM5
             
 def find_latest_gbl():
             
