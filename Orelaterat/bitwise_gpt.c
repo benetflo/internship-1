@@ -20,25 +20,20 @@ static inline int bit_set(uint8_t *reg, uint8_t bit)
 {
     if(*reg & (1 << bit))
     {
-        //printf("Bit is set\n");
         return 1;
     }else
     {
-        //printf("Bit is not set\n");
         return 0;
     }
 }
 
 static inline void keep_only_bit(uint8_t *reg, uint8_t bit)
 {
-    //0b00101010
     *reg = *reg & (1 << bit); 
 }
 
 static inline void set_bits(uint8_t *reg, uint8_t mask)
 {
-    //0b00010100
-    //0b00101011
     *reg = *reg | (mask);
 }
 
