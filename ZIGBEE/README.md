@@ -9,7 +9,7 @@
   - A **virtual environment** with `universal-silabs-flasher` installed
   - The `reset_chip.py` script (available in this repository under `ZIGBEE/`)
 
-### First edit the file and change the constant variables at the top of the file to fit your setup.
+### First edit the file and change the constant variables at the top of the **flash_zigbee_firmware.py** to fit your setup.
 
 ``python flash_zigbee_firmware.py``
 
