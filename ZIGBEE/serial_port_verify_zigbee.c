@@ -1,10 +1,3 @@
-
-
-// ÖPPNA SERIALPORT /dev/ttyAMA3 från ett C-program
-// Skicka ett enkelt kommando eller "ping" till Zigbee-modulen
-// Läsa och skriva ut modulens svar i terminalen
-// Ge tydlig indikation om modulen är aktiv efter flash eller inte
-
 #include <stdio.h>		// printf, perror, FILE*
 #include <stdlib.h>		// exit, malloc, free, system
 #include <string.h>		// memset, memcpy, strcmp
@@ -13,26 +6,6 @@
 #include <termios.h>	// struct termios, tcgetattr, tcsetattr
 #include <errno.h>		// errno
 #include <signal.h>
-
-/*
-Du behöver kolla dokumentation för dessa saker:
-
-Hur man öppnar en serialport i Linux (exempel: open, read, write, termios).
-Hur man ställer in baudrate och andra serialparametrar.
-Hur man hanterar timeouts när man väntar på svar.
-Hur man stänger porten och hanterar resurser korrekt.
-*/
-
-/*
-Vad programmet ska göra steg för steg:
-
-Öppna /dev/ttyAMA3 som en fil.
-Konfigurera serialparametrar (baudrate, parity, stopbit, etc.).
-Skicka ett kommando som chipet förväntas svara på.
-Läs tillbaka från porten med timeout.
-Skriv ut responsen i terminalen.
-Stäng porten ordentligt vid avslut.
-*/
 
 #define PORTNAME ("/dev/ttyAMA3")
 
