@@ -1,0 +1,7 @@
+Both firmware files have been disassembled with the following cmd:
+
+arm-none-eabi-objdump -D -marm -Mforce-thumb -b binary <firmware_file>.bin > <firmware_file>.asm
+
+The bootloader was disassembled with the following cmd: FORCE THUMB ON THIS ASWELL?
+
+arm-none-eabi-objdump -D -b binary -m arm bootloader.bin > bootloader.asm
